@@ -1,4 +1,8 @@
-﻿enum class EDirection {
+﻿#include <GL/glew.h>
+
+#include <GLM.hpp>
+
+enum class EDirection {
 	Forward,
 	Backward,
 	Left,

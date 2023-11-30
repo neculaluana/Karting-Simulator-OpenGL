@@ -76,7 +76,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>C:\G3D_Project\external\glfw-3.3.4.bin.WIN32\glfw-3.3.4.bin.WIN32\lib-vc2019;C:\G3D_Project\external\freeglut-MSVC-3.0.0-2.mp\freeglut\lib;C:\gl\glew-2.1.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\G3D_Project\external\stb-master\stb-master;C:\G3D_Project\external\glm-stable\glm-stable\glm;C:\G3D_Project\external\glfw-3.3.4.bin.WIN32\glfw-3.3.4.bin.WIN32\include\GLFW;C:\G3D_Project\external\glew-2.1.0-win32\glew-2.1.0\include;C:\G3D_Project\external\freeglut-MSVC-3.0.0-2.mp\freeglut\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\G3D_Project\external\stb-master\stb-master;C:\G3D_Project\external\glew-2.1.0\include;C:\G3D_Project\external\glfw-3.3.4.bin.WIN32\glfw-3.3.4.bin.WIN32\include\GLFW;C:\G3D_Project\external\glm-stable\glm-stable\glm;C:\G3D_Project\external\freeglut-MSVC-3.0.0-2.mp\freeglut\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Karting Simulator.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
