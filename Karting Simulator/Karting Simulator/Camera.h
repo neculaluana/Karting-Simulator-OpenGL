@@ -53,5 +53,5 @@ protected:
 	bool bFirstMouseMove = true;
 	float lastX = 0.f, lastY = 0.f;
 public:
-
+	Camera(const int width, const int height, const glm::vec3& position);
 };

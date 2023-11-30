@@ -21,6 +21,9 @@
 #pragma comment (lib, "glew32.lib")
 #pragma comment (lib, "OpenGL32.lib")
 
+GLuint ProjMatrixLocation, ViewMatrixLocation, WorldMatrixLocation;
+Camera* pCamera = nullptr;
+
 int main()
 {
 	glfwInit();
@@ -44,8 +47,29 @@ int main()
 	glewInit();
 
 	glEnable(GL_DEPTH_TEST);
+	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0, 0.0, 3.0));
 
 
 	glfwTerminate();
 	return 0;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	pCamera->Reshape(width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	pCamera->MouseControl((float)xpos, (float)ypos);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yOffset)
+{
+	pCamera->ProcessMouseScroll((float)yOffset);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	
 }

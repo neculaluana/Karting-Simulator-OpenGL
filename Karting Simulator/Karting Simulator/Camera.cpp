@@ -22,3 +22,5 @@ void Camera::UpdateCameraVectors()
 	right = glm::normalize(glm::cross(forward, worldUp));
 	up = glm::normalize(glm::cross(right, forward));
 }
+
+
