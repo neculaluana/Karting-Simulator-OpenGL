@@ -17,7 +17,7 @@ private:
 	glm::vec3 startPosition;
 
 	void ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
-
+	void UpdateCameraVectors();
 protected:
 
 public:
