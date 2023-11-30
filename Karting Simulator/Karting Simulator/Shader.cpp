@@ -20,3 +20,15 @@ void Shader::CreateShaders(void)
     glUseProgram(ProgramId);
 }
 
+void Shader::DestroyShaders(void)
+{
+    glUseProgram(0);
+
+    glDetachShader(ProgramId, VertexShaderId);
+    glDetachShader(ProgramId, FragmentShaderId);
+
+    glDeleteShader(FragmentShaderId);
+    glDeleteShader(VertexShaderId);
+
+    glDeleteProgram(ProgramId);
+}

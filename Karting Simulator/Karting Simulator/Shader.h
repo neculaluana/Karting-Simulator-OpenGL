@@ -10,6 +10,7 @@
 class Shader {
 public:
     void CreateShaders();
+    void DestroyShaders();
     GLuint VertexShaderId;
     GLuint ProgramId;
     GLuint FragmentShaderId;
