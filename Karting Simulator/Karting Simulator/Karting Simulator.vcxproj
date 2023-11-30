@@ -70,12 +70,17 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\stb-master\stb-master;C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\glm-stable\glm-stable\glm;C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\glfw-3.3.4.bin.WIN32\glfw-3.3.4.bin.WIN32\include\GLFW;C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\glew-2.1.0-win32\glew-2.1.0\include;C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\freeglut-MSVC-3.0.0-2.mp\freeglut\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\glfw-3.3.4.bin.WIN32\glfw-3.3.4.bin.WIN32\lib-vc2019;C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\freeglut-MSVC-3.0.0-2.mp\freeglut\lib;C:\date\FACULTATE\G3D\Karting-Simulator-OpenGL\external\glew-2.1.0-win32\glew-2.1.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Karting Simulator.cpp" />
+    <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
