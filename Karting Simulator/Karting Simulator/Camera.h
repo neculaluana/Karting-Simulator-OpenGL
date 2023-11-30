@@ -19,7 +19,27 @@ private:
 	void ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
 	void UpdateCameraVectors();
 protected:
+	const float cameraSpeedFactor = 2.5f;
+	const float mouseSensitivity = 1.0f;
 
+	float zNear;
+	float zFar;
+	float FoVy;
+	int width;
+	int height;
+	bool isPerspective;
+
+	glm::vec3 position;
+	glm::vec3 forward;
+	glm::vec3 right;
+	glm::vec3 up;
+	glm::vec3 worldUp;
+
+	float yaw;
+	float pitch;
+
+	bool bFirstMouseMove = true;
+	float lastX = 0.f, lastY = 0.f;
 public:
 
 };
