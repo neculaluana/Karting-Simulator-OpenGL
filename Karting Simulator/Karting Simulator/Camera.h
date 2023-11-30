@@ -2,6 +2,14 @@
 
 #include <GLM.hpp>
 
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+float Ka = 0.1;
+float Kd = 0.1;
+float Ks = 0.1;
+float expKs = 2;
+float radius = 1.0;
+
 enum class EDirection {
 	Forward,
 	Backward,
