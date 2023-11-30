@@ -1,14 +1,25 @@
-﻿#include <GL/glew.h>
+﻿#include <stdlib.h> 
+#include <stdio.h>
+#include <math.h> 
+
+#include <GL/glew.h>
 
 #include <GLM.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+
+#include <glfw3.h>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+#pragma comment (lib, "glfw3dll.lib")
+#pragma comment (lib, "glew32.lib")
+#pragma comment (lib, "OpenGL32.lib")
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-float Ka = 0.1;
-float Kd = 0.1;
-float Ks = 0.1;
-float expKs = 2;
-float radius = 1.0;
 
 enum class EDirection {
 	Forward,
@@ -55,5 +66,4 @@ protected:
 public:
 	Camera(const int width, const int height, const glm::vec3& position);
 	void Set(const int width, const int height, const glm::vec3& position);
-}
 };

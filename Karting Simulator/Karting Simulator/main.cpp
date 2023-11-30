@@ -1,28 +1,12 @@
-#include <stdlib.h> 
-#include <stdio.h>
-#include <math.h> 
-
-#include <GL/glew.h>
-
-#include <GLM.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
-
-#include <glfw3.h>
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-#include "Camera.h"
-#include "Shader.h"
-
-#pragma comment (lib, "glfw3dll.lib")
-#pragma comment (lib, "glew32.lib")
-#pragma comment (lib, "OpenGL32.lib")
+#include"Camera.h"
+#include"Shader.h"
 
 GLuint ProjMatrixLocation, ViewMatrixLocation, WorldMatrixLocation;
 Camera* pCamera = nullptr;
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main()
 {
@@ -56,17 +40,17 @@ int main()
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	pCamera->Reshape(width, height);
+	//pCamera->Reshape(width, height);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	pCamera->MouseControl((float)xpos, (float)ypos);
+	//pCamera->MouseControl((float)xpos, (float)ypos);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yOffset)
 {
-	pCamera->ProcessMouseScroll((float)yOffset);
+	//pCamera->ProcessMouseScroll((float)yOffset);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

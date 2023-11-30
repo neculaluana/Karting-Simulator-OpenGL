@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-void Camera::ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true)
+void Camera::ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch)
 {
 	yaw += xOffset;
 	pitch += yOffset;
