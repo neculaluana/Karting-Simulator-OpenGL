@@ -1,5 +1,6 @@
 #include "Skybox.h";
 
+
 Skybox::Skybox(const std::vector<std::string>& faces) {
 	skyboxShader = new Shader("skyboxVertexShader.vs", "skyboxFragmentShader.fs");
 	loadTextures(faces);
