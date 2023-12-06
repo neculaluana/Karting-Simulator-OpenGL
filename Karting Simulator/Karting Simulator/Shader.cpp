@@ -97,6 +97,8 @@ void Shader::Init(const char* vertexPath, const char* fragmentPath)
     CheckCompileErrors(ID, "PROGRAM");
 
     // 3. delete the shaders as they're linked into our program now and no longer necessery
+    loc_view_matrix = glGetUniformLocation(ID, "view");
+    loc_projection_matrix = glGetUniformLocation(ID, "projection");
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
