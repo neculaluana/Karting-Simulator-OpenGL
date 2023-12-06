@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "Shader.h"
+#include "Camera.h"
 #include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
 #define STB_IMAGE_IMPLEMENTATION

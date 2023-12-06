@@ -14,10 +14,8 @@ Skybox::~Skybox() {
 void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
 	glDepthFunc(GL_LEQUAL);
 
-	// Use the shader program
 	glUseProgram(skyboxShader->GetID());
 
-	// Set uniforms for view and projection matrices
 	glUniformMatrix4fv(skyboxShader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(skyboxShader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -32,7 +30,6 @@ void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
 
 void Skybox::setupMesh() {
     float skyboxVertices[] = {
-        // positions          
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
          1.0f, -1.0f, -1.0f,
