@@ -2,6 +2,19 @@
 
 
 
+Shader::Shader(const char* vertexPath, const char* fragmentPath)
+{
+    Init(vertexPath, fragmentPath);
+}
+
+Shader::~Shader()
+{
+    glDeleteProgram(ID);
+}
+
+unsigned int Shader::GetID() const
+{ return ID; }
+
 
 void Shader::CreateShaders(void)
 {
