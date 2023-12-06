@@ -8,8 +8,7 @@
 #include "Camera.h"
 #include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
 
 
 class Skybox {

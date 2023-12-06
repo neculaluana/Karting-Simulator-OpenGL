@@ -30,4 +30,19 @@ int main() {
         glfwTerminate();
         return -1;
     }
+
+   
+    std::vector<std::string> faces = {
+        "path/to/right.jpg",
+        "path/to/left.jpg",
+        "path/to/top.jpg",
+        "path/to/bottom.jpg",
+        "path/to/front.jpg",
+        "path/to/back.jpg"
+    };
+
+    
+    Skybox skybox(faces);
+    glEnable(GL_DEPTH_TEST);
+
 }

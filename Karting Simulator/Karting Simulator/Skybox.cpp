@@ -1,5 +1,6 @@
 #include "Skybox.h";
-
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 Skybox::Skybox(const std::vector<std::string>& faces) {
 	skyboxShader = new Shader("skyboxVertexShader.vs", "skyboxFragmentShader.fs");
