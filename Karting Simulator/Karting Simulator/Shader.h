@@ -25,7 +25,14 @@ public:
        "  gl_Position = in_Position;\n"\
        "  ex_Color = in_Color;\n"\
        "}\n"
+       
     };
+    Shader(const char* vertexPath, const char* fragmentPath);
+    ~Shader();
+    unsigned int GetID() const;
+    unsigned int loc_model_matrix;
+    unsigned int loc_view_matrix;
+    unsigned int loc_projection_matrix;
 
     const GLchar* FragmentShader =
     {
@@ -38,6 +45,9 @@ public:
        "}\n"
     };
 
-
-
-};
+private:
+    void Init(const char* vertexPath, const char* fragmentPath);
+    void CheckCompileErrors(unsigned int shader, std::string type); 
+    unsigned int ID;
+    Shader(const char* vertexPath, const char* fragmentPath);
+}; 
