@@ -51,3 +51,16 @@ void Camera::Set(const int width, const int height, const glm::vec3& position)
 	UpdateCameraVectors();
 }
 
+glm::mat4 Camera::GetViewMatrix() const {
+	return glm::lookAt(position, position + forward, up);
+}
+
+// Function to get the projection matrix
+glm::mat4 Camera::GetProjectionMatrix() const {
+	if (isPerspective) {
+		return glm::perspective(glm::radians(FoVy), static_cast<float>(width) / static_cast<float>(height), zNear, zFar);
+	}
+	else {
+		return glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), zNear, zFar);
+	}
+}

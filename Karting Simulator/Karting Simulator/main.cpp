@@ -45,4 +45,23 @@ int main() {
     Skybox skybox(faces);
     glEnable(GL_DEPTH_TEST);
 
+    while (!glfwWindowShouldClose(window)) {
+ 
+        glfwPollEvents();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = camera.GetProjectionMatrix();
+
+        skybox.render(view, projection);
+
+   
+        glfwSwapBuffers(window);
+    }
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+
+    return 0;
 }
