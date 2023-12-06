@@ -44,10 +44,8 @@ public:
        "  out_Color = ex_Color;\n"\
        "}\n"
     };
-
 private:
     void Init(const char* vertexPath, const char* fragmentPath);
     void CheckCompileErrors(unsigned int shader, std::string type); 
     unsigned int ID;
-    Shader(const char* vertexPath, const char* fragmentPath);
 }; 
