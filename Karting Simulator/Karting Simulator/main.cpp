@@ -7,7 +7,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
+void error_callback(int error, const char* description) {
+    std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
+}
+
 int main() {
+
+    glfwSetErrorCallback(error_callback);
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return -1;
@@ -33,12 +39,12 @@ int main() {
 
    
     std::vector<std::string> faces = {
-        "path/to/right.jpg",
-        "path/to/left.jpg",
-        "path/to/top.jpg",
-        "path/to/bottom.jpg",
-        "path/to/front.jpg",
-        "path/to/back.jpg"
+        "Resources/right.jpg",
+        "Resources/left.jpg",
+        "Resources/top.jpg",
+        "Resources/bottom.jpg",
+        "Resources/front.jpg",
+        "Resources/back.jpg"
     };
 
     
