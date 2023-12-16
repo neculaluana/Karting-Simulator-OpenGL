@@ -12,12 +12,20 @@ Skybox::~Skybox() {
 	delete skyboxShader;
 }
 
-void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
-	glDepthFunc(GL_LEQUAL);
+void Skybox::render(const glm::mat4& view, const glm::mat4& projection) 
+{
+    glUseProgram(skyboxShader->GetID());
 
-	glUseProgram(skyboxShader->GetID());
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after using shader program: " << err << std::endl;
+    }
 
-	glUniformMatrix4fv(skyboxShader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(view));
+
+    glUniformMatrix4fv(skyboxShader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(view));
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after setting view matrix: " << err << std::endl;
+    }
 	glUniformMatrix4fv(skyboxShader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projection));
 
 	glBindVertexArray(VAO);
