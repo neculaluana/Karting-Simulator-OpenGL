@@ -55,6 +55,12 @@ glm::mat4 Camera::GetViewMatrix() const {
 	return glm::lookAt(position, position + forward, up);
 }
 
+glm::mat4 Camera::GetSkyboxViewMatrix() const {
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f), forward, up);
+	return glm::mat4(glm::mat3(view)); // Remove translation for the skybox
+}
+
+
 // Function to get the projection matrix
 glm::mat4 Camera::GetProjectionMatrix() const {
 	if (isPerspective) {

@@ -69,4 +69,6 @@ public:
 	void Set(const int width, const int height, const glm::vec3& position);
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetProjectionMatrix() const;
+	glm::mat4 GetSkyboxViewMatrix() const;
+
 };
