@@ -5,13 +5,16 @@
 #include<sstream>
 #include<iostream>
 #include<cerrno>
+#include<vector>
 
 
 
 class Shader {
 public:
+    Shader();
     void CreateShaders();
     void DestroyShaders();
+    void Init(const char* vertexPath, const char* fragmentPath);
     GLuint VertexShaderId;
     GLuint ProgramId;
     GLuint FragmentShaderId;
@@ -26,7 +29,7 @@ public:
        "  gl_Position = in_Position;\n"\
        "  ex_Color = in_Color;\n"\
        "}\n"
-       
+
     };
     Shader(const char* vertexPath, const char* fragmentPath);
     ~Shader();
@@ -46,7 +49,7 @@ public:
        "}\n"
     };
 private:
-    void Init(const char* vertexPath, const char* fragmentPath);
-    void CheckCompileErrors(unsigned int shader, std::string type); 
+
+    void CheckCompileErrors(unsigned int shader, std::string type);
     unsigned int ID;
-}; 
+};
