@@ -20,18 +20,23 @@ void Skybox::render(const glm::mat4& view, const glm::mat4& projection)
     while ((err = glGetError()) != GL_NO_ERROR) {
         std::cerr << "OpenGL error after using shader program: " << err << std::endl;
     }
-
-
     glUniformMatrix4fv(skyboxShader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(view));
     while ((err = glGetError()) != GL_NO_ERROR) {
         std::cerr << "OpenGL error after setting view matrix: " << err << std::endl;
     }
-	glUniformMatrix4fv(skyboxShader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(skyboxShader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projection));
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after setting projection matrix: " << err << std::endl;
+    }
 
-	glBindVertexArray(VAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(VAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after binding VAO/texture: " << err << std::endl;
+    }
+
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 
 	glDepthFunc(GL_LESS);
