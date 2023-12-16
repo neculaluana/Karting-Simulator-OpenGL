@@ -37,9 +37,16 @@ void Skybox::render(const glm::mat4& view, const glm::mat4& projection)
     }
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after draw call: " << err << std::endl;
+    }
 
-	glDepthFunc(GL_LESS);
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after drawing: " << err << std::endl;
+    }
+
+    glBindVertexArray(0);
+    glDepthFunc(GL_LESS);
 }
 
 void Skybox::setupMesh() {
