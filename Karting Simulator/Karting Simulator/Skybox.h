@@ -9,26 +9,18 @@
 #include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
 
-
-
 class Skybox {
 public:
     Skybox(const std::vector<std::string>& faces);
     void render(const glm::mat4& view, const glm::mat4& projection);
     unsigned int LoadSkybox(const std::vector<std::string>& faces);
+    GLuint VAO, VBO;
+    GLuint textureID;
     ~Skybox();
 
 private:
-    GLuint VAO, VBO;
-    GLuint textureID;
     Shader* skyboxShader;
     std::vector<std::string> faces;
     void loadTextures(const std::vector<std::string>& faces);
     void setupMesh();
 };
-
-
-
-
-
-
