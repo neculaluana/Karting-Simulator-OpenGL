@@ -3,9 +3,18 @@
 #include "stb_image.h"
 
 Skybox::Skybox(const std::vector<std::string>& faces) {
-	skyboxShader = new Shader("skyboxVertexShader.vs", "skyboxFragmentShader.fs");
-	loadTextures(faces);
-	setupMesh();
+    skyboxShader = new Shader("skyboxVertexShader.vs", "skyboxFragmentShader.fs");
+    loadTextures(faces);
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after loading textures: " << err << std::endl;
+    }
+
+    setupMesh();
+
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        std::cerr << "OpenGL error after setting up mesh: " << err << std::endl;
+    }
 }
 
 Skybox::~Skybox() {
