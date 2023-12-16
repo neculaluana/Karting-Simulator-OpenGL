@@ -15,6 +15,7 @@ class Skybox {
 public:
     Skybox(const std::vector<std::string>& faces);
     void render(const glm::mat4& view, const glm::mat4& projection);
+    unsigned int LoadSkybox(const std::vector<std::string>& faces);
     ~Skybox();
 
 private:
