@@ -66,5 +66,18 @@ glm::mat4 Camera::GetSkyboxViewMatrix() const {
 
 // Function to get the projection matrix
 glm::mat4 Camera::GetProjectionMatrix() const {
-	return glm::perspective(glm::radians(FoVy), static_cast<float>(width) / static_cast<float>(height), zNear, zFar);
+	glm::mat4 Proj = glm::mat4(1);
+	if (isPerspective)
+	{
+		float aspectRatio = ((float)(width)) / height;
+		Proj = glm::perspective(glm::radians(FoVy), aspectRatio, zNear, zFar);
+	}
+	else
+	{
+		float scaleFactor = 2000.f;
+		Proj = glm::ortho<float>(
+			-width / scaleFactor, width / scaleFactor,
+			-height / scaleFactor, height / scaleFactor, -zFar, zFar);
+	}
+	return Proj;
 }
