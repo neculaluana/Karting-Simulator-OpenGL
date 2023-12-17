@@ -1,6 +1,12 @@
-#version 400
-out vec4 color;
+#version 330 core
 
-void main() {    
-    color = vec4(1.0, 0.0, 0.0, 1.0); // Output red for testing
+in vec3 TexCoords;
+
+out vec4 FragColor;
+
+uniform samplerCube skybox;
+
+void main()
+{
+    FragColor = texture(skybox, TexCoords);
 }

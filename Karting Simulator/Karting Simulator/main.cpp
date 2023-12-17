@@ -89,7 +89,7 @@ int main() {
         // Render the skybox
         glDepthMask(GL_FALSE); // Disable depth write for skybox drawing
 
-        glm::mat4 skyboxView = camera->GetSkyboxViewMatrix();
+        glm::mat4 skyboxView = camera->GetViewMatrix();
         glm::mat4 projection = camera->GetProjectionMatrix();
 
         skybox.render(skyboxView, projection);

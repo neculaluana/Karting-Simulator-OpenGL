@@ -27,20 +27,24 @@ Skybox::~Skybox() {
 
 void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
     glDepthFunc(GL_LEQUAL); 
+    loadTextures(faces);
     std::cout << "Starting skybox rendering." << std::endl;
     if (skyboxShader->ProgramId != 0) {
         glUseProgram(skyboxShader->ProgramId);
         std::cout << "Shader program used." << std::endl;
 
         // Set uniforms
-        glUniformMatrix4fv(skyboxShader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(skyboxShader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(glGetUniformLocation(skyboxShader->ProgramId, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(skyboxShader->ProgramId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
         std::cout << "Uniforms set." << std::endl;
 
         // Bind textures and VAO
         glBindVertexArray(VAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+        glUniform1i(glGetUniformLocation(skyboxShader->ProgramId, "skybox"), 0);
+
         std::cout << "VAO and texture bound." << std::endl;
 
         // Draw call
