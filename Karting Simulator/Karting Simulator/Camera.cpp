@@ -31,16 +31,22 @@ Camera::Camera(const int width, const int height, const glm::vec3& position):
 
 void Camera::Set(const int width, const int height, const glm::vec3& position)
 {
+	this->width = width;
+	this->height = height; 
 	this->position = position;
+	isPerspective = true;
 	this->yaw = YAW;
 	this->pitch = PITCH;
 	this->zNear = zNEAR;
 	this->zFar = zFAR;
 	this->FoVy = FOV;
 
+	lastX = width / 2.0f;
+	lastY = height / 2.0f;
+
 	// Set the camera to look towards the negative Z-axis
 	this->forward = glm::vec3(0.0f, 0.0f, -1.0f);
-	this->up = glm::vec3(0.0f, 1.0f, 0.0f);
+	this->up = glm::vec3(0, 1, 0);
 	this->right = glm::vec3(1.0f, 0.0f, 0.0f);
 	this->worldUp = up;
 

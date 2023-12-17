@@ -23,6 +23,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 enum class EDirection {
+	Unknown,
 	Forward,
 	Backward,
 	Left,
@@ -43,8 +44,8 @@ private:
 	void ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
 	void UpdateCameraVectors();
 protected:
-	const float cameraSpeedFactor = 2.5f;
-	const float mouseSensitivity = 1.0f;
+	const float cameraSpeedFactor = 50.0f;
+	const float mouseSensitivity = 0.25f;
 
 	float zNear;
 	float zFar;
