@@ -2,7 +2,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Skybox::Skybox(const std::vector<std::string>& faces) {
+Skybox::Skybox(const std::vector<std::string>& faces, Camera* camera) {
+
+    this->camera = camera;
     skyboxShader = new Shader(R"(C:\G3D_Project\Karting Simulator\Karting Simulator\skyboxVertexShader.vs)",
         R"(C:\G3D_Project\Karting Simulator\Karting Simulator\skyboxFragmentShader.fs)");
     loadTextures(faces);
@@ -16,6 +18,7 @@ Skybox::Skybox(const std::vector<std::string>& faces) {
     while ((err = glGetError()) != GL_NO_ERROR) {
         std::cerr << "OpenGL error after setting up mesh: " << err << std::endl;
     }
+
 }
 
 Skybox::~Skybox() {
@@ -23,6 +26,7 @@ Skybox::~Skybox() {
 }
 
 void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
+    glDepthFunc(GL_LEQUAL); 
     std::cout << "Starting skybox rendering." << std::endl;
     if (skyboxShader->ProgramId != 0) {
         glUseProgram(skyboxShader->ProgramId);
@@ -35,6 +39,7 @@ void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
 
         // Bind textures and VAO
         glBindVertexArray(VAO);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
         std::cout << "VAO and texture bound." << std::endl;
 

@@ -24,12 +24,12 @@ int main() {
     }
 
     // Set GLFW window hints here (before creating the window)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Skybox Example", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Karting Simulator Prejmer", NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -55,13 +55,14 @@ int main() {
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
+    glfwMakeContextCurrent(window);
 
     // Set up framebuffer size callback
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Create Camera
-    Camera camera(800, 600, glm::vec3(0.0f, 0.0f, 0.0f));
-
+    Camera* camera= new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 400.0f, 300.0f));
+    
     // Setup Skybox
     std::vector<std::string> faces = {
         R"(C:\G3D_Project\Karting Simulator\Karting Simulator\right.jpg)",
@@ -72,15 +73,15 @@ int main() {
         R"(C:\G3D_Project\Karting Simulator\Karting Simulator\back.jpg)"
         
     };
-    Skybox skybox(faces);
+    Skybox skybox(faces, camera);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LESS);
     // Main loop
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     while (!glfwWindowShouldClose(window)) {
-        // Poll for and process events
-        glfwPollEvents();
-
+       
         // Clear the buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT); // Clear depth buffer before drawing skybox
@@ -88,8 +89,8 @@ int main() {
         // Render the skybox
         glDepthMask(GL_FALSE); // Disable depth write for skybox drawing
 
-        glm::mat4 skyboxView = camera.GetSkyboxViewMatrix();
-        glm::mat4 projection = camera.GetProjectionMatrix();
+        glm::mat4 skyboxView = camera->GetSkyboxViewMatrix();
+        glm::mat4 projection = camera->GetProjectionMatrix();
 
         skybox.render(skyboxView, projection);
         GLenum err;
@@ -103,6 +104,8 @@ int main() {
             std::cerr << "OpenGL error at the end of the rendering loop: " << err << std::endl;
         }
         glfwSwapBuffers(window);
+        // Poll for and process events
+        glfwPollEvents();
     }
 
 
