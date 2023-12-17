@@ -50,6 +50,6 @@ public:
     };
 private:
 
-    void CheckCompileErrors(unsigned int shader, std::string type);
+    bool CheckCompileErrors(GLuint shader, std::string type);
     unsigned int ID;
 };

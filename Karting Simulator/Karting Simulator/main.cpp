@@ -2,7 +2,7 @@
 #include <glfw3.h>
 #include "Skybox.h"
 #include "Camera.h"
-#include "Shader.h"  // Include your Shader class
+#include "Shader.h"  
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -64,12 +64,13 @@ int main() {
 
     // Setup Skybox
     std::vector<std::string> faces = {
-        "right.jpg",
-        "left.jpg",
-        "top.jpg",
-        "bottom.jpg",
-        "front.jpg",
-        "back.jpg"
+        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\right.jpg)",
+        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\left.jpg)",
+        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\top.jpg)",
+        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\bottom.jpg)",
+        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\front.jpg)",
+        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\back.jpg)"
+        
     };
     Skybox skybox(faces);
     glEnable(GL_DEPTH_TEST);
@@ -87,7 +88,7 @@ int main() {
         // Render the skybox
         glDepthMask(GL_FALSE); // Disable depth write for skybox drawing
 
-        glm::mat4 skyboxView = camera.GetSkyboxViewMatrix(); // Remove translation
+        glm::mat4 skyboxView = camera.GetSkyboxViewMatrix();
         glm::mat4 projection = camera.GetProjectionMatrix();
 
         skybox.render(skyboxView, projection);

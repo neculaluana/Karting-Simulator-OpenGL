@@ -3,7 +3,8 @@
 #include "stb_image.h"
 
 Skybox::Skybox(const std::vector<std::string>& faces) {
-    skyboxShader = new Shader("skyboxVertexShader.vs", "skyboxFragmentShader.fs");
+    skyboxShader = new Shader(R"(C:\G3D_Project\Karting Simulator\Karting Simulator\skyboxVertexShader.vs)",
+        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\skyboxFragmentShader.fs)");
     loadTextures(faces);
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
@@ -22,89 +23,77 @@ Skybox::~Skybox() {
 }
 
 void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
-    glUseProgram(skyboxShader->GetID());
+    std::cout << "Starting skybox rendering." << std::endl;
+    if (skyboxShader->ProgramId != 0) {
+        glUseProgram(skyboxShader->ProgramId);
+        std::cout << "Shader program used." << std::endl;
 
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after using shader program: " << err << std::endl;
+        // Set uniforms
+        glUniformMatrix4fv(skyboxShader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(skyboxShader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projection));
+        std::cout << "Uniforms set." << std::endl;
+
+        // Bind textures and VAO
+        glBindVertexArray(VAO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+        std::cout << "VAO and texture bound." << std::endl;
+
+        // Draw call
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        std::cout << "Skybox drawn." << std::endl;
+
+        glBindVertexArray(0);
     }
-
-
-    glUniformMatrix4fv(skyboxShader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(view));
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after setting view matrix: " << err << std::endl;
+    else {
+        std::cerr << "Invalid shader program. Cannot render skybox." << std::endl;
     }
-
-    glUniformMatrix4fv(skyboxShader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projection));
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after setting projection matrix: " << err << std::endl;
-    }
-
-    glBindVertexArray(VAO);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after binding VAO/texture: " << err << std::endl;
-    }
-
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after draw call: " << err << std::endl;
-    }
-
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after drawing: " << err << std::endl;
-    }
-
-    glBindVertexArray(0);
-    glDepthFunc(GL_LESS);
+    std::cout << "Finished skybox rendering." << std::endl;
 }
 
 
 void Skybox::setupMesh() {
     float skyboxVertices[] = {
-        -1.0f,  1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
 
-        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, 1.0f,
         -1.0f, -1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
 
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
 
-        -1.0f, -1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
 
-        -1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
 
         -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f
     };
 
     glGenVertexArrays(1, &VAO);
