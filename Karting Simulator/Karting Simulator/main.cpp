@@ -1,17 +1,11 @@
 #include <GL/glew.h>
 #include <glfw3.h>
-#include "Skybox.h"
+#include "Shader.h"
 #include "Camera.h"
-#include "Shader.h"  
-#include <stb_image.h>
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
+#include "Skybox.h"
+#include <vector>
 
-void error_callback(int error, const char* description) {
-    std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
-}
-
+void processInput(GLFWwindow* window);
 
 unsigned int LoadSkybox(std::vector<std::string> faces) {
     unsigned int textureID;
@@ -128,11 +122,16 @@ int main() {
         glfwPollEvents();
     }
 
-
-
     // Clean up and exit
     glfwDestroyWindow(window);
     glfwTerminate();
 
+
+
     return 0;
+}
+
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 }
