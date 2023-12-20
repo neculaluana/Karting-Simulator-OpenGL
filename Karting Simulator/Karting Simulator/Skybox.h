@@ -14,15 +14,16 @@ class Skybox {
 public:
     Skybox(const std::vector<std::string>& faces, Camera* camera);
     Skybox();
-    void render(const glm::mat4& view, const glm::mat4& projection);
-    GLuint VAO, VBO;
-    GLuint textureID;
+    void render();
+    void loadTextures(const std::vector<std::string>& faces);
+    GLuint loadCubemap(const std::vector<std::string>& faces);
     ~Skybox();
 
 private:
     Shader* skyboxShader;
     std::vector<std::string> faces;
-    unsigned int loadTextures(const std::vector<std::string>& faces);
+    GLuint VAO, VBO;
+    GLuint textureID;
     void setupMesh();
     Camera* camera;
 };
