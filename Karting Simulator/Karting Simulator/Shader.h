@@ -3,6 +3,11 @@
 
 #include <GL/glew.h>
 #include<string>
+#include<fstream>
+#include<sstream>
+#include<iostream>
+#include<cerrno>
+#include<vector>
 
 class Shader {
 public:

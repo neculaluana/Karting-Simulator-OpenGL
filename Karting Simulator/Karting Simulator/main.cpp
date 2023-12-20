@@ -33,17 +33,17 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
     // Build and compile shaders
-    Shader skyboxShader("path/to/skyboxVertexShader.vert", "path/to/skyboxFragmentShader.frag");
+    Shader skyboxShader("C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\skyboxVertexShader.vs", "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\skyboxFragmentShader.fs");
 
     // Load skybox
     Skybox skybox;
     std::vector<std::string> faces = {
-        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\right.jpg)",
-        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\left.jpg)",
-        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\top.jpg)",
-        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\bottom.jpg)",
-        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\front.jpg)",
-        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\back.jpg)"
+        "C:\\Resources\\right.jpg",
+        "C:\\Resources\\left.jpg",
+        "C:\\Resources\\top.jpg",
+        "C:\\Resources\\bottom.jpg",
+        "C:\\Resources\\front.jpg",
+        "C:\\Resources\\back.jpg"
     };
     skybox.loadTextures(faces);
 
