@@ -3,7 +3,7 @@
 #include "Skybox.h"
 #include "Camera.h"
 #include "Shader.h"  
-
+#include <stb_image.h>
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -11,6 +11,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void error_callback(int error, const char* description) {
     std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
 }
+
 
 
 
@@ -89,7 +90,7 @@ int main() {
         // Render the skybox
         glDepthMask(GL_FALSE); // Disable depth write for skybox drawing
 
-        glm::mat4 skyboxView = camera->GetViewMatrix();
+        glm::mat4 skyboxView = glm::mat4(glm::mat3(camera->GetViewMatrix()));
         glm::mat4 projection = camera->GetProjectionMatrix();
 
         skybox.render(skyboxView, projection);
