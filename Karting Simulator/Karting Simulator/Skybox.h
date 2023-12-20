@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SKYBOX_H
+#define SKYBOX_H
 #include <GL/glew.h>
 #include <glfw3.h>
 #include <GLM.hpp>
@@ -12,8 +13,8 @@
 class Skybox {
 public:
     Skybox(const std::vector<std::string>& faces, Camera* camera);
+    Skybox();
     void render(const glm::mat4& view, const glm::mat4& projection);
-    unsigned int LoadSkybox(const std::vector<std::string>& faces);
     GLuint VAO, VBO;
     GLuint textureID;
     ~Skybox();
@@ -25,3 +26,4 @@ private:
     void setupMesh();
     Camera* camera;
 };
+#endif

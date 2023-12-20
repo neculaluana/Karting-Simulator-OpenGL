@@ -21,7 +21,13 @@ Skybox::Skybox(const std::vector<std::string>& faces, Camera* camera) {
 
 }
 
+Skybox::Skybox(): VAO(0), VBO(0), textureID(0) {
+    setupMesh();
+}
+
 Skybox::~Skybox() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
     delete skyboxShader;
 }
 
