@@ -1,84 +1,9 @@
 #include "Shader.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
-Shader::Shader() {
-    // Initialize with default behavior or leave empty if nothing is needed
-}
-
-
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
-{
-    std::cout << "Creating Shader with vertex path: " << vertexPath
-        << " and fragment path: " << fragmentPath << std::endl;
-
-    std::string vertexCode;
-    std::string fragmentCode;
-    std::ifstream vShaderFile;
-    std::ifstream fShaderFile;
-
-    // Ensure ifstream objects can throw exceptions:
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-    try {
-        // Open files
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
-        std::stringstream vShaderStream, fShaderStream;
-
-        // Read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
-
-        // Close file handlers
-        vShaderFile.close();
-        fShaderFile.close();
-
-        // Convert stream into string
-        vertexCode = vShaderStream.str();
-        fragmentCode = fShaderStream.str();
-        std::cout << "Successfully read shader files." << std::endl;
-    }
-    catch (std::ifstream::failure& e) {
-        std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
-        return;
-    }
-
-    const char* vShaderCode = vertexCode.c_str();
-    const char* fShaderCode = fragmentCode.c_str();
-
-    // Compile shaders
-    GLuint vertex, fragment;
-    vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vShaderCode, NULL);
-    glCompileShader(vertex);
-    if (!CheckCompileErrors(vertex, "VERTEX")) {
-        return;
-    }
-
-    fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fShaderCode, NULL);
-    glCompileShader(fragment);
-    if (!CheckCompileErrors(fragment, "FRAGMENT")) {
-        return;
-    }
-
-    // Shader Program
-    ProgramId = glCreateProgram();
-    std::cout << "Created Program ID: " << ProgramId << std::endl;
-    glAttachShader(ProgramId, vertex);
-    glAttachShader(ProgramId, fragment);
-    glLinkProgram(ProgramId);
-    if (!CheckCompileErrors(ProgramId, "PROGRAM")) {
-        return;
-    }
-
-    // Delete shaders; they're linked into our program now and no longer necessary
-    glDeleteShader(vertex);
-    glDeleteShader(fragment);
-
-    std::cout << "Shader program created successfully." << std::endl;
-
-}
+Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 
 Shader::~Shader()
 {
