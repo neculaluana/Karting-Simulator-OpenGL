@@ -22,33 +22,34 @@ int main() {
     }
     glfwMakeContextCurrent(window);
 
-    // Make the window's context current
-    glfwMakeContextCurrent(window);
-
     // Initialize GLEW
-    glewExperimental = GL_TRUE; // Needed for core profile
+    glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
-        std::cerr << "Failed to initialize GLEW" << std::endl;
+        std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
 
-    // Error check after GLEW initialization
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after GLEW initialization: " << err << std::endl;
-    }
-    // Set the viewport
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
-    glfwMakeContextCurrent(window);
+    // Configure global OpenGL state
+    glEnable(GL_DEPTH_TEST);
 
-    // Set up framebuffer size callback
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    // Build and compile shaders
+    Shader skyboxShader("path/to/skyboxVertexShader.vert", "path/to/skyboxFragmentShader.frag");
 
-    // Create Camera
-    Camera* camera= new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 400.0f, 300.0f));
-    
+    // Load skybox
+    Skybox skybox;
+    std::vector<std::string> faces = {
+        "path/to/right.jpg",
+        "path/to/left.jpg",
+        "path/to/top.jpg",
+        "path/to/bottom.jpg",
+        "path/to/front.jpg",
+        "path/to/back.jpg"
+    };
+    skybox.loadTextures(faces);
+
+    // Create camera
+    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
     // Setup Skybox
     std::vector<std::string> faces= {
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\right.jpg)",
@@ -59,47 +60,6 @@ int main() {
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\back.jpg)"
         
     };
-    Skybox skybox(faces, camera);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthFunc(GL_LESS);
-    // Main loop
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    while (!glfwWindowShouldClose(window)) {
-       
-        // Clear the buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT); // Clear depth buffer before drawing skybox
-        glDepthFunc(GL_LEQUAL);
-        // Render the skybox
-        glDepthMask(GL_FALSE); // Disable depth write for skybox drawing
-
-        glm::mat4 skyboxView = glm::mat4(glm::mat3(camera->GetViewMatrix()));
-        glm::mat4 projection = camera->GetProjectionMatrix();
-
-        skybox.render(skyboxView, projection);
-        GLenum err;
-        while ((err = glGetError()) != GL_NO_ERROR) {
-            std::cerr << "OpenGL error: " << err << std::endl;
-        }
-        glDepthMask(GL_TRUE);
-        glDepthFunc(GL_LESS);
-        // ... (Render other objects here)
-        while ((err = glGetError()) != GL_NO_ERROR) {
-            std::cerr << "OpenGL error at the end of the rendering loop: " << err << std::endl;
-        }
-        glfwSwapBuffers(window);
-        // Poll for and process events
-        glfwPollEvents();
-    }
-
-    // Clean up and exit
-    glfwDestroyWindow(window);
-    glfwTerminate();
-
-
-
     return 0;
 }
 
