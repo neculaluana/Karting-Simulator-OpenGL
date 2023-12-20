@@ -31,39 +31,21 @@ Skybox::~Skybox() {
     delete skyboxShader;
 }
 
-void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
-    glDepthFunc(GL_LEQUAL); 
-    loadTextures(faces);
-    std::cout << "Starting skybox rendering." << std::endl;
-    if (skyboxShader->ProgramId != 0) {
-        glUseProgram(skyboxShader->ProgramId);
-        std::cout << "Shader program used." << std::endl;
+void Skybox::render(GLuint skyboxShaderProgram, const glm::mat4& view, const glm::mat4& projection)
+{
+    glDepthMask(GL_FALSE);
+    glUseProgram(skyboxShaderProgram);
 
-        // Set uniforms
-        glUniformMatrix4fv(glGetUniformLocation(skyboxShader->ProgramId, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(glGetUniformLocation(skyboxShader->ProgramId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    GLint viewLoc = glGetUniformLocation(skyboxShaderProgram, "view");
+    GLint projLoc = glGetUniformLocation(skyboxShaderProgram, "projection");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        std::cout << "Uniforms set." << std::endl;
 
-        // Bind textures and VAO
-        glBindVertexArray(VAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-        glUniform1i(glGetUniformLocation(skyboxShader->ProgramId, "skybox"), 0);
-
-        std::cout << "VAO and texture bound." << std::endl;
-
-        // Draw call
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        std::cout << "Skybox drawn." << std::endl;
-
-        glBindVertexArray(0);
-    }
-    else {
-        std::cerr << "Invalid shader program. Cannot render skybox." << std::endl;
-    }
-    std::cout << "Finished skybox rendering." << std::endl;
 }
+
+
+
 
 
 void Skybox::setupMesh() {
