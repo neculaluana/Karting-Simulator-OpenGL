@@ -11,8 +11,7 @@ public:
     void Use();
     
 private:
-
-    bool CheckCompileErrors(GLuint shader, std::string type);
+    void checkCompileErrors(GLuint shader, std::string type);
 };
 
 #endif
