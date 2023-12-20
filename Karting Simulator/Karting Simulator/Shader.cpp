@@ -3,107 +3,56 @@
 #include <fstream>
 #include <sstream>
 
-Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
-
-Shader::~Shader()
-{
-    glDeleteProgram(ID);
+Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath) {
+    // 1. Retrieve the vertex/fragment source code from filePath
+    std::string vertexCode;
+    std::string fragmentCode;
+    std::ifstream vShaderFile;
+    std::ifstream fShaderFile;
+    // ensures ifstream objects can throw exceptions:
+    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try {
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        std::stringstream vShaderStream, fShaderStream;
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
+        vShaderFile.close();
+        fShaderFile.close();
+        vertexCode = vShaderStream.str();
+        fragmentCode = fShaderStream.str();
+    }
+    catch (std::ifstream::failure& e) {
+        std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
+    // 2. Compile shaders
+    GLuint vertex, fragment;
+    // Vertex Shader
+    vertex = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex, 1, &vShaderCode, NULL);
+    glCompileShader(vertex);
+    // check for shader compile errors
+    checkCompileErrors(vertex, "VERTEX");
+    // Fragment Shader
+    fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment, 1, &fShaderCode, NULL);
+    glCompileShader(fragment);
+    // check for shader compile errors
+    checkCompileErrors(fragment, "FRAGMENT");
+    // Shader Program
+    this->Program = glCreateProgram();
+    glAttachShader(this->Program, vertex);
+    glAttachShader(this->Program, fragment);
+    glLinkProgram(this->Program);
+    // check for linking errors
+    checkCompileErrors(this->Program, "PROGRAM");
+    // delete the shaders as they're linked into our program now and no longer necessery
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
 }
-
-unsigned int Shader::GetID() const
-{
-    return ID;
-}
-
-
-void Shader::CreateShaders(void) {
-
-    VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(VertexShaderId, 1, &VertexShader, NULL);
-    glCompileShader(VertexShaderId);
-    CheckCompileErrors(VertexShaderId, "VERTEX");
-
-
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after compiling vertex shader: " << err << std::endl;
-    }
-
-
-    FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(FragmentShaderId, 1, &FragmentShader, NULL);
-    glCompileShader(FragmentShaderId);
-    CheckCompileErrors(FragmentShaderId, "FRAGMENT");
-
-
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error after compiling fragment shader: " << err << std::endl;
-    }
-}
-
-
-void Shader::DestroyShaders(void)
-{
-    glUseProgram(0);
-
-    glDetachShader(ProgramId, VertexShaderId);
-    glDetachShader(ProgramId, FragmentShaderId);
-
-    glDeleteShader(FragmentShaderId);
-    glDeleteShader(VertexShaderId);
-
-    glDeleteProgram(ProgramId);
-}
-
-void Shader::Init(const char* vertexPath, const char* fragmentPath) {
-    CreateShaders();
-
-    ProgramId = glCreateProgram();
-    if (ProgramId == 0) {
-        std::cerr << "Failed to create shader program" << std::endl;
-        return;
-    }
-
-    glAttachShader(ProgramId, VertexShaderId);
-    glAttachShader(ProgramId, FragmentShaderId);
-    glLinkProgram(ProgramId);
-
-    GLint isLinked = 0;
-    glGetProgramiv(ProgramId, GL_LINK_STATUS, &isLinked);
-    if (isLinked == GL_FALSE) {
-        GLint maxLength = 0;
-        glGetProgramiv(ProgramId, GL_INFO_LOG_LENGTH, &maxLength);
-        std::vector<GLchar> infoLog(maxLength);
-        glGetProgramInfoLog(ProgramId, maxLength, &maxLength, &infoLog[0]);
-        std::cerr << "Shader Linking Error: " << &infoLog[0] << std::endl;
-
-        glDeleteProgram(ProgramId);
-        ProgramId = 0; // Set to zero to indicate failure
-        return;
-    }
-
-    glUseProgram(ProgramId);
-
-    // Retrieve uniform locations
-    glUniform1i(glGetUniformLocation(ProgramId, "skybox"), 0);
-    loc_view_matrix = glGetUniformLocation(ProgramId, "view");
-    loc_projection_matrix = glGetUniformLocation(ProgramId, "projection");
-
-    if (loc_view_matrix == -1) {
-        std::cerr << "Warning: Uniform 'view' location not found." << std::endl;
-    }
-    if (loc_projection_matrix == -1) {
-        std::cerr << "Warning: Uniform 'projection' location not found." << std::endl;
-    }
-
-    // Detach and delete shaders as they are no longer needed
-    glDetachShader(ProgramId, VertexShaderId);
-    glDetachShader(ProgramId, FragmentShaderId);
-    glDeleteShader(VertexShaderId);
-    glDeleteShader(FragmentShaderId);
-}
-
-
 
 bool Shader::CheckCompileErrors(GLuint shader, std::string type) {
     GLint success;
