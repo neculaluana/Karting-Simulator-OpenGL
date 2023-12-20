@@ -13,7 +13,26 @@ void error_callback(int error, const char* description) {
 }
 
 
-
+unsigned int LoadSkybox(std::vector<std::string> faces) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data) {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                data);
+        }
+        stbi_image_free(data);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    return textureID;
+}
 
 int main() {
     glfwSetErrorCallback(error_callback);
@@ -65,13 +84,13 @@ int main() {
     Camera* camera= new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 400.0f, 300.0f));
     
     // Setup Skybox
-    std::vector<std::string> faces = {
-        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\right.jpg)",
-        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\left.jpg)",
-        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\top.jpg)",
-        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\bottom.jpg)",
-        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\front.jpg)",
-        R"(C:\G3D_Project\Karting Simulator\Karting Simulator\back.jpg)"
+    std::vector<std::string> faces= {
+        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\right.jpg)",
+        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\left.jpg)",
+        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\top.jpg)",
+        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\bottom.jpg)",
+        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\front.jpg)",
+        "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\back.jpg)"
         
     };
     Skybox skybox(faces, camera);

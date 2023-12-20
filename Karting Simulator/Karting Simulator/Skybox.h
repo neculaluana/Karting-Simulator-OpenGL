@@ -21,7 +21,7 @@ public:
 private:
     Shader* skyboxShader;
     std::vector<std::string> faces;
-    void loadTextures(const std::vector<std::string>& faces);
+    unsigned int loadTextures(const std::vector<std::string>& faces);
     void setupMesh();
     Camera* camera;
 };
