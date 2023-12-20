@@ -40,7 +40,16 @@ void Skybox::render(GLuint skyboxShaderProgram, const glm::mat4& view, const glm
     GLint projLoc = glGetUniformLocation(skyboxShaderProgram, "projection");
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    glDepthMask(GL_TRUE);
+
+    glUseProgram(0);
 
 }
 
