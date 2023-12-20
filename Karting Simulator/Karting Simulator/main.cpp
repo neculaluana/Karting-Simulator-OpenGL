@@ -38,28 +38,39 @@ int main() {
     // Load skybox
     Skybox skybox;
     std::vector<std::string> faces = {
-        "path/to/right.jpg",
-        "path/to/left.jpg",
-        "path/to/top.jpg",
-        "path/to/bottom.jpg",
-        "path/to/front.jpg",
-        "path/to/back.jpg"
-    };
-    skybox.loadTextures(faces);
-
-    // Create camera
-    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-
-    // Setup Skybox
-    std::vector<std::string> faces= {
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\right.jpg)",
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\left.jpg)",
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\top.jpg)",
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\bottom.jpg)",
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\front.jpg)",
         "C:\\G3D_Project\\Karting Simulator\\Karting Simulator\\back.jpg)"
-        
     };
+    skybox.loadTextures(faces);
+
+    // Create camera
+    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
+    while (!glfwWindowShouldClose(window)) {
+        // Input
+        processInput(window);
+
+        // Render
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Draw skybox
+        skyboxShader.Use();
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        skybox.render(skyboxShader.Program, view, projection);
+
+        // GLFW: swap buffers and poll IO events
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // GLFW: terminate, clearing all previously allocated GLFW resources.
+    glfwTerminate();
     return 0;
 }
 
