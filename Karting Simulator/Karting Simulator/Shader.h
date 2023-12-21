@@ -1,22 +1,24 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef SHADER_CLASS_H
+#define SHADER_CLASS_H
 
-#include <GL/glew.h>
+#include<glad/glad.h>
 #include<string>
 #include<fstream>
 #include<sstream>
 #include<iostream>
 #include<cerrno>
-#include<vector>
+
+std::string get_file_contents(const char* filename);
 
 class Shader {
 public:
-    GLuint Program;
-    Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-    void Use();
+    GLuint ID;
+    Shader(const char* vertexFile, const char* fragmentFile);
+    void Activate();
+    void Delete();
     
 private:
-    void checkCompileErrors(GLuint shader, std::string type);
+   void compileErrors(unsigned int shader, const char* type);
 };
 
 #endif
