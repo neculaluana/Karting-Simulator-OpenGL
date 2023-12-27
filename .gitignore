@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+!C:/G3D_Project/Karting Simulator/Karting Simulator/Libraries/
+!C:/G3D_Project/Karting Simulator/Karting Simulator/Resources/

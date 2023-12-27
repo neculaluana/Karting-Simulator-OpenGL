@@ -100,9 +100,9 @@ int main()
 
 	
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string modelPath = "D:\\gits\\opengl-tutorials\\Resources\\YoutubeOpenGL 19 - Cubemaps & Skyboxes\\models\\airplane\\scene.gltf";
+	std::string modelPath = "Resources/model/scene.gltf";
 
-	Model model((parentDir + modelPath).c_str());
+	Model model(( modelPath).c_str());
 
 
 
@@ -129,12 +129,12 @@ int main()
 
 	std::string facesCubemap[6] =
 	{
-		 "right.jpg",
-		"left.jpg",
-		 "top.jpg",
-		 "bottom.jpg",
-		"front.jpg",
-		"back.jpg"
+		 "Resources/right.jpg",
+		"Resources/left.jpg",
+		 "Resources/top.jpg",
+		 "Resources/bottom.jpg",
+		"Resources/front.jpg",
+		"Resources/back.jpg"
 	};
 
 	unsigned int cubemapTexture;
@@ -149,9 +149,12 @@ int main()
 	{
 		int width, height, nrChannels;
 		unsigned char* data = stbi_load(facesCubemap[i].c_str(), &width, &height, &nrChannels, 0);
+		
 		if (data)
 		{
 			stbi_set_flip_vertically_on_load(false);
+			if (i == 5)
+				stbi_set_flip_vertically_on_load(true);
 			glTexImage2D
 			(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
@@ -201,7 +204,7 @@ int main()
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 
-		model.Draw(shaderProgram, camera);
+		//model.Draw(shaderProgram, camera);
 
 		glDepthFunc(GL_LEQUAL);
 
