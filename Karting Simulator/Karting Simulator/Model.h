@@ -2,6 +2,9 @@
 #define MODEL_CLASS_H
 
 #include<json/json.h>
+#include <assimp/include/assimp/Importer.hpp>
+#include <assimp/include/assimp/scene.h>
+#include <assimp/include/assimp/postprocess.h>
 #include"Mesh.h"
 
 using json = nlohmann::json;
@@ -17,6 +20,9 @@ private:
 	const char* file;
 	std::vector<unsigned char> data;
 	json JSON;
+	void loadModel(const std::string& path);
+	void processNode(aiNode* node, const aiScene* scene);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Mesh> meshes;
 	std::vector<glm::vec3> translationsMeshes;
