@@ -153,8 +153,8 @@ int main()
 		if (data)
 		{
 			stbi_set_flip_vertically_on_load(false);
-			if (i == 5)
-				stbi_set_flip_vertically_on_load(true);
+			/*if (i == 5)
+				stbi_set_flip_vertically_on_load(true);*/
 			glTexImage2D
 			(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
@@ -176,26 +176,13 @@ int main()
 		}
 	}
 
+	std::string piratObjFileName = "C:\\Users\\luana\\Downloads\\obiecte\\ViewOBJModel\\ViewOBJModel\\Models\\Pirat\\Pirat.obj";
+	Model piratObjModel(piratObjFileName, false);
 
 
 	while (!glfwWindowShouldClose(window))
 	{
-		crntTime = glfwGetTime();
-		timeDiff = crntTime - prevTime;
-		counter++;
-
-		if (timeDiff >= 1.0 / 30.0)
-		{
-			std::string FPS = std::to_string((1.0 / timeDiff) * counter);
-			std::string ms = std::to_string((timeDiff / counter) * 1000);
-			std::string newTitle = "YoutubeOpenGL - " + FPS + "FPS / " + ms + "ms";
-			glfwSetWindowTitle(window, newTitle.c_str());
-
-			prevTime = crntTime;
-			counter = 0;
-
-			
-		}
+		
 
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -211,11 +198,14 @@ int main()
 		skyboxShader.Activate();
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
+		glm::mat4 piratModel = glm::scale(glm::mat4(1.0), glm::vec3(1.f));
 		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
 		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "model"), 1, GL_FALSE, &piratModel[0][0]);
 
+		piratObjModel.Draw(skyboxShader);
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);

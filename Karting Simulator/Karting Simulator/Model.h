@@ -2,25 +2,29 @@
 #define MODEL_CLASS_H
 
 #include<json/json.h>
-#include <assimp/include/assimp/Importer.hpp>
-#include <assimp/include/assimp/scene.h>
-#include <assimp/include/assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include"Mesh.h"
 
 using json = nlohmann::json;
+unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false);
 
 class Model
 {
 public:
 	Model(const char* file);
+	Model(std::string const& path, bool bSmoothNormals, bool gamma=false);
 
-	void Draw(Shader& shader, Camera& camera);
+	void Draw(Shader& shader);
 
 private:
 	const char* file;
 	std::vector<unsigned char> data;
 	json JSON;
-	void loadModel(const std::string& path);
+	std::string directory;
+	bool gammaCorrection;
+	void loadModel(const std::string& path, bool bSmoothNormals);
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 
@@ -42,12 +46,12 @@ private:
 	std::vector<GLuint> getIndices(json accessor);
 	std::vector<Texture> getTextures();
 
-	std::vector<Vertex> assembleVertices
-	(
-		std::vector<glm::vec3> positions,
-		std::vector<glm::vec3> normals,
-		std::vector<glm::vec2> texUVs
-	);
+	//std::vector<Vertex> assembleVertices
+	//(
+	//	std::vector<glm::vec3> positions,
+	//	std::vector<glm::vec3> normals,
+	//	std::vector<glm::vec2> texUVs
+	//);
 
 	std::vector<glm::vec2> groupFloatsVec2(std::vector<float> floatVec);
 	std::vector<glm::vec3> groupFloatsVec3(std::vector<float> floatVec);

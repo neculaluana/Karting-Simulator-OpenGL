@@ -1,10 +1,53 @@
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures) :vertices(vertices),
-indices(indices),
-textures(textures)
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures)
+	
 {
+	std::cout << "start mesh constructor " << std::endl;
+
+	std::cout << "reserve vertices " << std::endl;
+	numVertices = vertices.size();
+	this->vertices.reset(new Vertex[numVertices]);
+
+	std::cout << "start copy vertices " << std::endl;
+	for (size_t i = 0; i < vertices.size(); ++i) {
+		this->vertices.get()[i] = vertices[i];
+	}
+
+	std::cout << "reserve indices " << std::endl;
+	numIndexes = indices.size();
+	this->indices.reset(new unsigned int[numIndexes]);
+
+	std::cout << "start copy indices " << std::endl;
+	for (size_t i = 0; i < indices.size(); ++i) {
+		this->indices.get()[i] = indices[i];
+	}
+
+	std::cout << "start copy textures " << std::endl;
+	this->textures = textures;
+
+	// now that we have all the required data, set the vertex buffers and its attribute pointers.
 	setupMesh();
+
+	std::cout << "end mesh constructor " << std::endl;
+}
+
+Mesh::Mesh(unsigned int numVertices, std::shared_ptr <Vertex> vertices, unsigned int numIndexes, std::shared_ptr <unsigned int> indices,  std::vector<Texture>& textures)
+{
+	std::cout << "start mesh constructor. num vertice = " << numVertices << " num indexes " << numIndexes << std::endl;
+
+	this->numVertices = numVertices;
+	this->vertices = vertices;
+
+	this->numIndexes = numIndexes;
+	this->indices = indices;
+
+	this->textures = textures;
+
+	// now that we have all the required data, set the vertex buffers and its attribute pointers.
+	setupMesh();
+
+	std::cout << "end mesh constructor " << std::endl;
 }
 
 void Mesh::Draw(Shader& shader)
@@ -36,7 +79,7 @@ void Mesh::Draw(Shader& shader)
 	glBindVertexArray(VAO);
 
 	//std::cout << "draw triangles: " << numIndexes << std::endl;
-	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(numIndexes), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	// always good practice to set everything back to defaults once configured.
@@ -54,9 +97,9 @@ void Mesh::setupMesh() {
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vertex), &vertices.get()[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndexes * sizeof(unsigned int), &indices.get()[0], GL_STATIC_DRAW);
 
 	// Vertex Positions
 	glEnableVertexAttribArray(0);
@@ -69,4 +112,5 @@ void Mesh::setupMesh() {
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
 	glBindVertexArray(0);
+	std::cout << "end to setup mesh " << std::endl;
 }
