@@ -31,8 +31,17 @@ void Mesh::Draw(Shader& shader)
      // now set the sampler to the correct texture unit
       glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
       // and finally bind the texture
-      glBindTexture(GL_TEXTURE_2D, textures[i].ID);
-   }
+		glBindTexture(GL_TEXTURE_2D, textures[i].ID);
+	}
+	glBindVertexArray(VAO);
+
+	//std::cout << "draw triangles: " << numIndexes << std::endl;
+	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(numIndexes), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	// always good practice to set everything back to defaults once configured.
+	glActiveTexture(GL_TEXTURE0);
+	//std::cout << "end drawing " << std::endl;
 
 }
 
