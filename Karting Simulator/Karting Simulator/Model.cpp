@@ -319,5 +319,23 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 		vector.y = mesh->mVertices[i].y;
 		vector.z = mesh->mVertices[i].z;
 		vertex.Position = vector;
+		// Normals
+		if (mesh->HasNormals()) {
+			vector.x = mesh->mNormals[i].x;
+			vector.y = mesh->mNormals[i].y;
+			vector.z = mesh->mNormals[i].z;
+			vertex.Normal = vector;
+		}
+		// Texture Coordinates
+		if (mesh->mTextureCoords[0]) {
+			glm::vec2 vec;
+			vec.x = mesh->mTextureCoords[0][i].x;
+			vec.y = mesh->mTextureCoords[0][i].y;
+			vertex.TexCoords = vec;
+		}
+		else {
+			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+		}
+		vertices.push_back(vertex);
 	}
 }
