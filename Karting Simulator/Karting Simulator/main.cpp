@@ -99,10 +99,10 @@ int main()
 
 
 	
-	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
+	/*std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string modelPath = "Resources/model/scene.gltf";
 
-	Model model(( modelPath).c_str());
+	Model model(( modelPath).c_str());*/
 
 
 

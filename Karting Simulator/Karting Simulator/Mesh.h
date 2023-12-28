@@ -14,7 +14,7 @@ public:
 	std::vector <Vertex> vertices;
 	std::vector <GLuint> indices;
 	std::vector <Texture> textures;
-	VAO VAO;
+	GLuint VAO;
 
 	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures);
 
@@ -29,8 +29,8 @@ public:
 	);
 
 private:
-	VBO VBO;
-	EBO EBO;
+	GLuint VBO;
+	GLuint EBO;
 	void setupMesh();
 };
 #endif
