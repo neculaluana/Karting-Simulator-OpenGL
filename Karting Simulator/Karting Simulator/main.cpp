@@ -49,6 +49,7 @@ unsigned int skyboxIndices[] =
 
 
 
+
 int main()
 {
 	
@@ -99,11 +100,7 @@ int main()
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 
-	
-	/*std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string modelPath = "Resources/model/scene.gltf";
 
-	Model model(( modelPath).c_str());*/
 
 
 
@@ -155,8 +152,6 @@ int main()
 		if (data)
 		{
 			stbi_set_flip_vertically_on_load(false);
-			/*if (i == 5)
-				stbi_set_flip_vertically_on_load(true);*/
 			glTexImage2D
 			(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
@@ -178,8 +173,12 @@ int main()
 		}
 	}
 
-	std::string piratObjFileName = "C:\\Users\\luana\\Downloads\\obiecte\\ViewOBJModel\\ViewOBJModel\\Models\\Pirat\\Pirat.obj";
-	Model piratObjModel(piratObjFileName, false);
+	std::string kartObjFileName = "Resources/Models/Kart2/kart.obj";
+	Model kartObjModel(kartObjFileName.c_str(), false);
+	glm::mat4 kartModelMatrix = glm::mat4(1.0f); 
+	kartModelMatrix = glm::translate(kartModelMatrix, glm::vec3(0.0f, 0.0f, -100.0f));
+	kartModelMatrix = glm::scale(kartModelMatrix, glm::vec3(1.0f));
+
 
 
 	while (!glfwWindowShouldClose(window))
@@ -194,16 +193,20 @@ int main()
 
 		
 		shaderProgram.Activate();
-		glm::mat4 piratModel = glm::scale(glm::mat4(1.0), glm::vec3(1.f));
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, &piratModel[0][0]);
-		piratObjModel.Draw(shaderProgram);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
+		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
+		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(kartModelMatrix));
+		kartObjModel.Draw(shaderProgram);
+
 		
 
 		glDepthFunc(GL_LEQUAL);
 
 		skyboxShader.Activate();
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
 		
 		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
 		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
@@ -233,3 +236,5 @@ int main()
 	glfwTerminate();
 	return 0;
 }
+
+
