@@ -1,10 +1,11 @@
+
 #include<filesystem>
+
 namespace fs = std::filesystem;
 
 
-
 #include"Model.h"
-
+#include<stb/stb_image.h>
 
 const unsigned int width = 800;
 const unsigned int height = 800;
@@ -148,6 +149,7 @@ int main()
 	for (unsigned int i = 0; i < 6; i++)
 	{
 		int width, height, nrChannels;
+		if(i==0) stbi_set_flip_vertically_on_load(true);
 		unsigned char* data = stbi_load(facesCubemap[i].c_str(), &width, &height, &nrChannels, 0);
 		
 		if (data)
@@ -190,22 +192,26 @@ int main()
 		camera.Inputs(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-
-		//model.Draw(shaderProgram, camera);
+		
+		shaderProgram.Activate();
+		glm::mat4 piratModel = glm::scale(glm::mat4(1.0), glm::vec3(1.f));
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, &piratModel[0][0]);
+		piratObjModel.Draw(shaderProgram);
+		
 
 		glDepthFunc(GL_LEQUAL);
 
 		skyboxShader.Activate();
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
-		glm::mat4 piratModel = glm::scale(glm::mat4(1.0), glm::vec3(1.f));
+		
 		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
 		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "model"), 1, GL_FALSE, &piratModel[0][0]);
+		
 
-		piratObjModel.Draw(skyboxShader);
+		
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);

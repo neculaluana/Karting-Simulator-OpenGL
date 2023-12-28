@@ -1,7 +1,7 @@
 #ifndef VBO_CLASS_H
 #define VBO_CLASS_H
 #define MAX_BONE_INFLUENCE 4
-
+#pragma once
 #include<glm/glm.hpp>
 #include<glad/glad.h>
 #include<vector>
