@@ -36,7 +36,7 @@ void Mesh::Draw(Shader& shader)
 	glBindVertexArray(VAO);
 
 	//std::cout << "draw triangles: " << numIndexes << std::endl;
-	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(numIndexes), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	// always good practice to set everything back to defaults once configured.
