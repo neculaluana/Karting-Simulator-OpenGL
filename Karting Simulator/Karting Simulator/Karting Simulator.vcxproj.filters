@@ -92,6 +92,8 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="defaultFragmentShader.fs" />
+    <None Include="Lamp.fs" />
+    <None Include="Lamp.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="back.jpg">
