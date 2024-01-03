@@ -10,19 +10,35 @@ namespace fs = std::filesystem;
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 
+//bool firstPerson = false;
+Camera* pCamera = nullptr;
+
+void Cleanup()
+{
+	delete pCamera;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void processInput(GLFWwindow* window);
+
+// timing
+double deltaTime = 0.0f;    // time between current frame and last frame
+double lastFrame = 0.0f;
 
 
 float skyboxVertices[] =
 {
 
-	-1.0f, -1.0f,  1.0f,
-	 1.0f, -1.0f,  1.0f,
-	 1.0f, -1.0f, -1.0f,
-	-1.0f, -1.0f, -1.0f,
-	-1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f
+	-100.0f, -100.0f,  100.0f,
+	 100.0f, -10.0f,  100.0f,
+	 100.0f, -100.0f, -100.0f,
+	-100.0f, -100.0f, -100.0f,
+	-100.0f,  100.0f,  100.0f,
+	 100.0f,  100.0f,  100.0f,
+	 100.0f,  100.0f, -100.0f,
+	-100.0f,  100.0f, -100.0f
 };
 
 unsigned int skyboxIndices[] =
@@ -98,7 +114,7 @@ int main()
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
 
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(width, height, glm::vec3(40.0f, 40.0f, 2.0f));
 
 
 
@@ -246,43 +262,132 @@ int main()
 	std::string kartObjFileName = "Resources/Models/Kart4/GoCart.obj";
 
 	Model kartObjModel(kartObjFileName.c_str(), false);
-	glm::mat4 kartModelMatrix = glm::mat4(1.0f);
+	/*glm::mat4 kartModelMatrix = glm::mat4(1.0f);
 	kartModelMatrix = glm::translate(kartModelMatrix, glm::vec3(0.0f, -2.0f, -5.0f));
+	kartModelMatrix = glm::scale(kartModelMatrix, glm::vec3(1.0f));*/
+
+	glm::mat4 kartModelMatrix = glm::mat4(1.0f);
+	kartModelMatrix = glm::translate(kartModelMatrix, glm::vec3(12.5f, -18.5f, -5.0f));
+	kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rotate by 180 degrees around the y-axis
 	kartModelMatrix = glm::scale(kartModelMatrix, glm::vec3(1.0f));
+
 
 	std::string trackObjFileName = "Resources/Models/Track/10605_Slot_Car_Race_Track_v1_L3.obj";
 	Model trackObjModel(trackObjFileName.c_str(), false);
-	glm::mat4 trackModelMatrix = glm::mat4(1.0f);
-	trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -20.0f, -5.0f));
-	float rotationAngle = glm::radians(90.0f); // For a 90-degree rotation
-	trackModelMatrix = glm::rotate(trackModelMatrix, rotationAngle, glm::vec3(1.0f, 0.0f, 0.0f)); // Rotating around the X axis
+	//glm::mat4 trackModelMatrix = glm::mat4(1.0f);
+	//trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -20.0f, -5.0f));
+	//float rotationAngle = glm::radians(90.0f); // For a 90-degree rotation
+	//trackModelMatrix = glm::rotate(trackModelMatrix, rotationAngle, glm::vec3(1.0f, 0.0f, 0.0f)); // Rotating around the X axis
 
+	//trackModelMatrix = glm::scale(trackModelMatrix, glm::vec3(1.0f));
+
+	glm::mat4 trackModelMatrix = glm::mat4(1.0f);
+	trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -20.0f, 30.0f));
+	float rotationAngle = glm::radians(90.0f);
+	trackModelMatrix = glm::rotate(trackModelMatrix, rotationAngle, glm::vec3(1.0f, 0.0f, 0.0f));
+	float rotationAngle2 = glm::radians(180.0f);
+	trackModelMatrix = glm::rotate(trackModelMatrix, rotationAngle2, glm::vec3(0.0f, 1.0f, 0.0f));
 	trackModelMatrix = glm::scale(trackModelMatrix, glm::vec3(1.0f));
 
+	// Move the track forward by adjusting the translation
+	trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -40.0f, 0.0f)); // Adjust the Z component
+
+	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0, 0.0, 3.0));
+
+	// Set the callback functions
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+
+	// Enable cursor capture (optional, but might be useful for a first-person camera)
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glm::mat4 projection, view;
 
 	while (!glfwWindowShouldClose(window))
 	{
+		double currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 
+		// input
+		processInput(window);
 
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		camera.Inputs(window);
-		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 		lightPos.x = 0.5 * cos(glfwGetTime());
 		lightPos.z = 0.5 * sin(glfwGetTime());
 
+		glDepthFunc(GL_LEQUAL);
+		glCullFace(GL_FRONT);
+		skyboxShader.Activate();
+
+		view = glm::mat4(glm::mat3(pCamera->GetViewMatrix()));
+		projection = pCamera->GetProjectionMatrix();
+
+		// Apply a translation to the skybox based on the camera's position
+		glm::mat4 skyboxModelMatrix = glm::translate(glm::mat4(1.0f), pCamera->GetPosition());
+
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+
+		glDepthFunc(GL_LESS);
+		glCullFace(GL_BACK); // Reset to default culling mode
+
+		float kartSpeed = 0.05f;
+		
+		glm::vec3 kartPosition = glm::vec3(12.5f, -18.5f, -5.0f);
+		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+			pCamera->SetPosition(kartPosition + glm::vec3(0.0f, 0.0f, 3.0f));
+			//firstPerson = true;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(0.0f, 0.0f, 1.0f));
+			kartPosition = kartSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
+			//if (firstPerson)
+			//{
+			//	pCamera->SetPosition(kartPosition + glm::vec3(0.0f, 0.0f, 3.0f));
+			//}
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(1.0f, 0.0f, 0.0f));
+			kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(0.75f), glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(0.0f, 0.0f, -1.0f));
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(-1.0f, 0.0f, 0.0f));
+			kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(-0.75f), glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		
+		// Draw the kart with the updated position and rotation
+		//kartModelMatrix = glm::translate(kartModelMatrix, kartPosition);
+		//kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(kartRotation), glm::vec3(0.0f, 1.0f, 0.0f));
+		//kartModelMatrix = glm::scale(kartModelMatrix, glm::vec3(1.0f));
+
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(kartModelMatrix));
+		kartObjModel.Draw(shader);
+
 		glDisable(GL_CULL_FACE);
 		shader.Activate();
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
-		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
-		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+		 view = glm::mat4(1.0f);
+		 projection = glm::mat4(1.0f);
+		view = pCamera->GetViewMatrix();
+		projection = pCamera->GetProjectionMatrix();
+		
 		glUniform3f(glGetUniformLocation(shader.ID, "objectColor"), 1.0f, 0.0f, 0.0);
 		glUniform3f(glGetUniformLocation(shader.ID, "lightColor"), 1.0f, 1.0f, 1.0f);
 		glUniform3f(glGetUniformLocation(shader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-		glUniform3f(glGetUniformLocation(shader.ID, "viewPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		glUniform3fv(glGetUniformLocation(shader.ID, "viewPos"), 1, &pCamera->GetPosition()[0]);
 
+		
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(kartModelMatrix));
@@ -293,11 +398,10 @@ int main()
 		glDepthFunc(GL_LEQUAL);
 		glDisable(GL_CULL_FACE);
 		shader.Activate();
-		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
-		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+		view = pCamera->GetViewMatrix();
+		projection = pCamera->GetProjectionMatrix();
 		glUniform3f(glGetUniformLocation(shader.ID, "objectColor"), 0.6f, 0.6f, 0.6f);
-		glUniform3f(glGetUniformLocation(shader.ID, "viewPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-
+		glUniform3fv(glGetUniformLocation(shader.ID, "viewPos"), 1, &pCamera->GetPosition()[0]);
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(trackModelMatrix));
@@ -307,21 +411,24 @@ int main()
 
 		glDepthFunc(GL_LEQUAL);
 
-		lampShader.Activate();
-		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
-		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
-		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glm::mat4 lightModel = glm::translate(glm::mat4(1.0), lightPos);
-		lightModel = glm::scale(lightModel, glm::vec3(0.05f)); // a smaller cube
-		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &lightModel[0][0]);
-		glBindVertexArray(lightVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//lampShader.Activate();
+		//view = pCamera->GetViewMatrix();
+		//projection = pCamera->GetProjectionMatrix();
+		//glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		//glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		//glm::mat4 lightModel = glm::translate(glm::mat4(1.0), lightPos);
+		//lightModel = glm::scale(lightModel, glm::vec3(0.05f)); // a smaller cube
+		//glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &lightModel[0][0]);
+		//glBindVertexArray(lightVAO);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		// Activate the skybox shader
+		
+		/*
 		skyboxShader.Activate();
 
-		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
-		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+		view = pCamera->GetViewMatrix();
+		projection = pCamera->GetProjectionMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -333,7 +440,7 @@ int main()
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-		glDepthFunc(GL_LESS);
+		glDepthFunc(GL_LESS);*/
 
 
 		glfwSwapBuffers(window);
@@ -348,5 +455,48 @@ int main()
 	glfwTerminate();
 	return 0;
 }
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	// Update camera based on user input
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(LEFT, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(RIGHT, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(UP, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		pCamera->Reset(width, height);
+	}
+}
 
 
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	// make sure the viewport matches the new window dimensions; note that width and 
+	// height will be significantly larger than specified on retina displays.
+	pCamera->Reshape(width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	pCamera->MouseControl((float)xpos, (float)ypos);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yOffset)
+{
+	pCamera->ProcessMouseScroll((float)yOffset);
+}
