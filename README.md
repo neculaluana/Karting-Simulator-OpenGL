@@ -28,4 +28,13 @@ Before running the simulator, ensure you have the necessary dependencies install
 ## Acknowledgments
 - This project relies on the GLFW, GLAD, GLM, and STB Image libraries.
 
+## Demo
+ - https://youtu.be/SFCc86VQRrs
+
+## Contributors
+ - Necula Luana
+ - Petcu Andora 
+ - Popa Alexandru
+ - Ilie Denisa
+
    
