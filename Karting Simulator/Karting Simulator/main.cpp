@@ -64,7 +64,8 @@ unsigned int skyboxIndices[] =
 };
 
 
-
+glm::vec3 kartPosition = glm::vec3(12.5f, -18.5f, -5.0f);
+bool firstPerson = false;
 
 int main()
 {
@@ -114,7 +115,7 @@ int main()
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
 
-	Camera camera(width, height, glm::vec3(40.0f, 40.0f, 2.0f));
+	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 
 
@@ -301,7 +302,7 @@ int main()
 	// Enable cursor capture (optional, but might be useful for a first-person camera)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glm::mat4 projection, view;
-
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		double currentFrame = glfwGetTime();
@@ -341,30 +342,78 @@ int main()
 
 		float kartSpeed = 0.05f;
 		
-		glm::vec3 kartPosition = glm::vec3(12.5f, -18.5f, -5.0f);
+		
 		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
 			pCamera->SetPosition(kartPosition + glm::vec3(0.0f, 0.0f, 3.0f));
-			//firstPerson = true;
+			firstPerson = true;
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		/*if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(0.0f, 0.0f, 1.0f));
 			kartPosition = kartSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
-			//if (firstPerson)
-			//{
-			//	pCamera->SetPosition(kartPosition + glm::vec3(0.0f, 0.0f, 3.0f));
-			//}
+			if (firstPerson)
+			{
+				pCamera->SetPosition(kartPosition);
+			}
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(1.0f, 0.0f, 0.0f));
 			kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(0.75f), glm::vec3(0.0f, 1.0f, 0.0f));
+			kartPosition = kartSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+			if (firstPerson)
+			{
+				pCamera->SetPosition(kartPosition);
+			}
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(0.0f, 0.0f, -1.0f));
+			kartPosition = kartSpeed * glm::vec3(0.0f, 0.0f, -1.0f);
+			if (firstPerson)
+			{
+				pCamera->SetPosition(kartPosition);
+			}
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(-1.0f, 0.0f, 0.0f));
 			kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(-0.75f), glm::vec3(0.0f, 1.0f, 0.0f));
+			kartPosition = kartSpeed * glm::vec3(-1.0f, 0.0f, 0.0f);
+			if (firstPerson)
+			{
+				pCamera->SetPosition(kartPosition);
+			}
+		}*/
+		
+		//float kartSpeed = 0.05f;
+		glm::vec3 direction(0.0f);
+		float rotationAngle =glm::radians(0.0f);
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			direction.z = kartSpeed; // Assuming -Z is forward
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			direction.z = -kartSpeed; // Assuming +Z is backward
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			direction.x = kartSpeed; // Assuming -X is left
+			rotationAngle = glm::radians(0.75f);
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			direction.x = -kartSpeed; // Assuming +X is right
+			rotationAngle = glm::radians(-0.75f);
+		}
+
+		kartModelMatrix = glm::translate(kartModelMatrix, direction);
+		//kartModelMatrix = glm::rotate(kartModelMatrix, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		kartPosition += direction;
+
+		// Update camera position if in firstPerson mode
+		if (firstPerson) {
+			glm::vec3 cameraOffset = glm::vec3(0.0f, 1.0f, -3.0f); // Offset the camera position
+			glm::vec3 cameraByKartPosition(0.0f);
+			cameraByKartPosition.x = -kartPosition.x+25.0f;
+			cameraByKartPosition.z = -kartPosition.z-6.75f;
+			cameraByKartPosition.y = kartPosition.y-0.38f;
+			pCamera->SetPosition(cameraByKartPosition + cameraOffset);
 		}
 		
 		// Draw the kart with the updated position and rotation
@@ -478,7 +527,9 @@ void processInput(GLFWwindow* window)
 		int width, height;
 		glfwGetWindowSize(window, &width, &height);
 		pCamera->Reset(width, height);
+		firstPerson = false;
 	}
+	
 }
 
 
