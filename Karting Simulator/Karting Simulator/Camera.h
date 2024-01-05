@@ -85,7 +85,7 @@ public:
 		// define the viewport transformation
 		glViewport(0, 0, windowWidth, windowHeight);
 	}
-
+	
 	const glm::mat4 GetViewMatrix() const
 	{
 		// Returns the View Matrix
