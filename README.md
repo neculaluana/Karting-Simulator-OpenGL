@@ -1,7 +1,7 @@
-# Karting Simulator Project
+#  Karting Simulator Project
 
 ## Overview
-This project is a Karting Simulator developed in C++ using the OpenGL library. It provides a simple and interactive environment where users can control a kart within a 3D world.
+This project is a Karting Simulator developed in C++ using the OpenGL library. It provides a simple and interactive environment where users can control a kart within a 3D world, simulating the karting track in the city of Prejmer.
 
 ## Prerequisites
 Before running the simulator, ensure you have the necessary dependencies installed:
