@@ -190,10 +190,7 @@ private:
 		yaw += xOffset;
 		pitch += yOffset;
 
-		//std::cout << "yaw = " << yaw << std::endl;
-		//std::cout << "pitch = " << pitch << std::endl;
-
-		// Avem grijã sã nu ne dãm peste cap
+		
 		if (constrainPitch) {
 			if (pitch > 89.0f)
 				pitch = 89.0f;

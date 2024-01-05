@@ -1,12 +1,22 @@
 #ifndef MESH_CLASS_H
 #define MESH_CLASS_H
+#define MAX_BONE_INFLUENCE 4
 #pragma once
 #include<string>
-
-#include"VAO.h"
-#include"EBO.h"
 #include"Camera.h"
+#include<vector>
 #include"Texture.h"
+
+
+struct Vertex {
+	glm::vec3 Position;
+	glm::vec3 Normal;
+	glm::vec2 TexCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
+	int m_BoneIDs[MAX_BONE_INFLUENCE];
+	float m_Weights[MAX_BONE_INFLUENCE];
+};
 
 class Mesh
 {

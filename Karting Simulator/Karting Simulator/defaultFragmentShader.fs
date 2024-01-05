@@ -12,7 +12,7 @@ uniform vec3 objectColor;
 void main()
 {
 	// simple color blending
-    //FragColor = vec4(lightColor * objectColor, 1.0);
+    FragColor = vec4(lightColor * objectColor, 1.0);
 	
 	// ambient
     float ambientStrength = 0.2;

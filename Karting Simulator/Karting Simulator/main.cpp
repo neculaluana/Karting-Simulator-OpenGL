@@ -94,7 +94,6 @@ int main()
 
 	Shader shader("defaultVertexShader.vs", "defaultFragmentShader.fs");
 	Shader skyboxShader("skyboxVertexShader.vs", "skyboxFragmentShader.fs");
-	Shader lampShader("Lamp.vs", "Lamp.fs");
 
 	glm::vec4 lightColor = glm::vec4(12.0f, 12.0f, 12.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.0f, 100.0f, 0.f);
@@ -233,7 +232,6 @@ int main()
 	for (unsigned int i = 0; i < 6; i++)
 	{
 		int width, height, nrChannels;
-		//if(i==0) stbi_set_flip_vertically_on_load(true);
 		unsigned char* data = stbi_load(facesCubemap[i].c_str(), &width, &height, &nrChannels, 0);
 
 		if (data)
@@ -260,12 +258,10 @@ int main()
 		}
 	}
 
-	std::string kartObjFileName = "Resources/Models/Kart4/GoCart.obj";
+	std::string kartObjFileName = "Resources/Models/Kart/GoCart.obj";
 
 	Model kartObjModel(kartObjFileName.c_str(), false);
-	/*glm::mat4 kartModelMatrix = glm::mat4(1.0f);
-	kartModelMatrix = glm::translate(kartModelMatrix, glm::vec3(0.0f, -2.0f, -5.0f));
-	kartModelMatrix = glm::scale(kartModelMatrix, glm::vec3(1.0f));*/
+	
 
 	glm::mat4 kartModelMatrix = glm::mat4(1.0f);
 	kartModelMatrix = glm::translate(kartModelMatrix, glm::vec3(12.5f, -18.5f, -5.0f));
@@ -275,12 +271,7 @@ int main()
 
 	std::string trackObjFileName = "Resources/Models/Track/10605_Slot_Car_Race_Track_v1_L3.obj";
 	Model trackObjModel(trackObjFileName.c_str(), false);
-	//glm::mat4 trackModelMatrix = glm::mat4(1.0f);
-	//trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -20.0f, -5.0f));
-	//float rotationAngle = glm::radians(90.0f); // For a 90-degree rotation
-	//trackModelMatrix = glm::rotate(trackModelMatrix, rotationAngle, glm::vec3(1.0f, 0.0f, 0.0f)); // Rotating around the X axis
-
-	//trackModelMatrix = glm::scale(trackModelMatrix, glm::vec3(1.0f));
+	
 
 	glm::mat4 trackModelMatrix = glm::mat4(1.0f);
 	trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -20.0f, 30.0f));
@@ -293,7 +284,7 @@ int main()
 	// Move the track forward by adjusting the translation
 	trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -40.0f, 0.0f)); // Adjust the Z component
 
-	std::string terrainObjFileName = "Resources/Models/Terrain2/Photoscan - Koeln_Drecksfeld_01.obj";
+	std::string terrainObjFileName = "Resources/Models/Terrain/Photoscan - Koeln_Drecksfeld_01.obj";
 
 	Model terrainObjModel(terrainObjFileName.c_str(), false);
 	glm::mat4 terrainModelMatrix = glm::mat4(1.0f);
@@ -360,17 +351,17 @@ int main()
 		glm::vec3 direction(0.0f);
 		float rotationAngle =glm::radians(0.0f);
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			direction.z = kartSpeed; // Assuming -Z is forward
+			direction.z = kartSpeed; 
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			direction.z = -kartSpeed; // Assuming +Z is backward
+			direction.z = -kartSpeed; 
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			direction.x = kartSpeed; // Assuming -X is left
+			direction.x = kartSpeed; 
 			rotationAngle = glm::radians(0.75f);
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			direction.x = -kartSpeed; // Assuming +X is right
+			direction.x = -kartSpeed; 
 			rotationAngle = glm::radians(-0.75f);
 		}
 
@@ -389,10 +380,7 @@ int main()
 			pCamera->SetPosition(cameraByKartPosition + cameraOffset);
 		}
 		
-		// Draw the kart with the updated position and rotation
-		//kartModelMatrix = glm::translate(kartModelMatrix, kartPosition);
-		//kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(kartRotation), glm::vec3(0.0f, 1.0f, 0.0f));
-		//kartModelMatrix = glm::scale(kartModelMatrix, glm::vec3(1.0f));
+		
 
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(kartModelMatrix));
 		
