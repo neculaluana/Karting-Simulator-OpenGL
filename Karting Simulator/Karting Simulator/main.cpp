@@ -96,8 +96,8 @@ int main()
 	Shader skyboxShader("skyboxVertexShader.vs", "skyboxFragmentShader.fs");
 	Shader lampShader("Lamp.vs", "Lamp.fs");
 
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec4 lightColor = glm::vec4(12.0f, 12.0f, 12.0f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 100.0f, 0.f);
 
 	shader.Activate();
 	glUniform4f(glGetUniformLocation(shader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -293,6 +293,16 @@ int main()
 	// Move the track forward by adjusting the translation
 	trackModelMatrix = glm::translate(trackModelMatrix, glm::vec3(0.0f, -40.0f, 0.0f)); // Adjust the Z component
 
+	std::string terrainObjFileName = "Resources/Models/Terrain2/Photoscan - Koeln_Drecksfeld_01.obj";
+
+	Model terrainObjModel(terrainObjFileName.c_str(), false);
+	glm::mat4 terrainModelMatrix = glm::mat4(1.0f);
+	terrainModelMatrix = glm::translate(terrainModelMatrix, glm::vec3(0.0f, -670.0f, 60.0f)); // Adjust Y and Z accordingly
+	terrainModelMatrix = glm::rotate(terrainModelMatrix, glm::radians(60.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Flip upside down by rotating 180 degrees around the X-axis
+	terrainModelMatrix = glm::rotate(terrainModelMatrix, glm::radians(185.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotate 180 degrees around the Y-axis
+	terrainModelMatrix = glm::scale(terrainModelMatrix, glm::vec3(200.0f)); // Adjust scale as needed
+
+
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0, 0.0, 3.0));
 
 	// Set the callback functions
@@ -347,43 +357,6 @@ int main()
 			pCamera->SetPosition(kartPosition + glm::vec3(0.0f, 0.0f, 3.0f));
 			firstPerson = true;
 		}
-
-		/*if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(0.0f, 0.0f, 1.0f));
-			kartPosition = kartSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
-			if (firstPerson)
-			{
-				pCamera->SetPosition(kartPosition);
-			}
-		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(1.0f, 0.0f, 0.0f));
-			kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(0.75f), glm::vec3(0.0f, 1.0f, 0.0f));
-			kartPosition = kartSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
-			if (firstPerson)
-			{
-				pCamera->SetPosition(kartPosition);
-			}
-		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(0.0f, 0.0f, -1.0f));
-			kartPosition = kartSpeed * glm::vec3(0.0f, 0.0f, -1.0f);
-			if (firstPerson)
-			{
-				pCamera->SetPosition(kartPosition);
-			}
-		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			kartModelMatrix = glm::translate(kartModelMatrix, kartSpeed * glm::vec3(-1.0f, 0.0f, 0.0f));
-			kartModelMatrix = glm::rotate(kartModelMatrix, glm::radians(-0.75f), glm::vec3(0.0f, 1.0f, 0.0f));
-			kartPosition = kartSpeed * glm::vec3(-1.0f, 0.0f, 0.0f);
-			if (firstPerson)
-			{
-				pCamera->SetPosition(kartPosition);
-			}
-		}*/
-		
-		//float kartSpeed = 0.05f;
 		glm::vec3 direction(0.0f);
 		float rotationAngle =glm::radians(0.0f);
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -402,7 +375,7 @@ int main()
 		}
 
 		kartModelMatrix = glm::translate(kartModelMatrix, direction);
-		//kartModelMatrix = glm::rotate(kartModelMatrix, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+		kartModelMatrix = glm::rotate(kartModelMatrix, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		kartPosition += direction;
 
@@ -422,7 +395,7 @@ int main()
 		//kartModelMatrix = glm::scale(kartModelMatrix, glm::vec3(1.0f));
 
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(kartModelMatrix));
-		kartObjModel.Draw(shader);
+		
 
 		glDisable(GL_CULL_FACE);
 		shader.Activate();
@@ -430,7 +403,9 @@ int main()
 		 projection = glm::mat4(1.0f);
 		view = pCamera->GetViewMatrix();
 		projection = pCamera->GetProjectionMatrix();
+		// Increase light intensity
 		
+
 		glUniform3f(glGetUniformLocation(shader.ID, "objectColor"), 1.0f, 0.0f, 0.0);
 		glUniform3f(glGetUniformLocation(shader.ID, "lightColor"), 1.0f, 1.0f, 1.0f);
 		glUniform3f(glGetUniformLocation(shader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
@@ -460,36 +435,19 @@ int main()
 
 		glDepthFunc(GL_LEQUAL);
 
-		//lampShader.Activate();
-		//view = pCamera->GetViewMatrix();
-		//projection = pCamera->GetProjectionMatrix();
-		//glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-		//glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		//glm::mat4 lightModel = glm::translate(glm::mat4(1.0), lightPos);
-		//lightModel = glm::scale(lightModel, glm::vec3(0.05f)); // a smaller cube
-		//glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &lightModel[0][0]);
-		//glBindVertexArray(lightVAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		// Activate the skybox shader
-		
-		/*
-		skyboxShader.Activate();
-
+		shader.Activate();
 		view = pCamera->GetViewMatrix();
 		projection = pCamera->GetProjectionMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-
-
-		glBindVertexArray(skyboxVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
-
-		glDepthFunc(GL_LESS);*/
+		lightColor = glm::vec4(12.0f, 12.0f, 12.0f, 12.0f); // Brighter light
+		glUniform3f(glGetUniformLocation(shader.ID, "lightColor"), 1.0f, 1.0f, 1.0f);
+		glUniform3f(glGetUniformLocation(shader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+		glUniform3f(glGetUniformLocation(shader.ID, "objectColor"), 0.0f, 0.6f, 0.0f);
+		glUniform3fv(glGetUniformLocation(shader.ID, "viewPos"), 1, &pCamera->GetPosition()[0]);
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(terrainModelMatrix));
+		terrainObjModel.Draw(shader);
+		glDepthFunc(GL_LEQUAL);
 
 
 		glfwSwapBuffers(window);
